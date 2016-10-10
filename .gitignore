@@ -2,3 +2,9 @@
 /Attachments_micro51/
 /SATURN-3009 DOCS/
 /SATURN-DOC/
+*.hex
+*.bin
+*.dbg
+*.obj
+*.rpt
+*.BM

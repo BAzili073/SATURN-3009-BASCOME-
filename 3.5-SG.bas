@@ -7,12 +7,9 @@ $framesize = 120                                            ' 1 raz SMS ob otkl 
 $baud = 19200                                               ' Vyshe 19200 pri kvarce 4/8/16 MHz nel'zya! Ili nado s drobnymi znacheniyami!
                ' Dlya otladki  zamenit' "''  Print #1" na "'  Print #1" i obratno pri normal'nom rejime raboty BAZILIO
 
-   Open "comd.4:19200,8,n,1" For Output As #1               'proggaz
-   Open "comd.2:19200,8,n,1" For Input As #2                'proggaz
-  ' Open "comd.2:19200,8,n,1" For Output As #1               'progguard
+   Open "comd.2:19200,8,n,1" For Output As #1               'progguard
                                      'ubrat'   stroku Out_3 Alias Portd.4
 Dim A As Byte , Inmessage$ As String * 4 , Time_error As Long
-Dim Out_5 As Bit                                            'proggaz
 Dim Startbit As Byte , Error_line As Byte                   'servisgaz
 Dim Bin_vhodi As Byte , Kotli(3) As String * 1              ' , Kot_2 As String * 1 , Kot_3 As String * 1 ,       '  'servisgaz
 
@@ -75,23 +72,15 @@ Config Portd.7 = Input : Portd.7 = 1                        ' = Knopka Nomer_Hoz
 Button Alias Pind.7                                         ' podklyuchenie knopki vhoda v nastroyku
 L_no_220 Alias Portd.5                                      ' podklyuchenie svetodioda
 L_gsm Alias Portd.6                                         ' podklyuchenie svetodioda
-Out_3 Alias Portd.3                                         ' vyhod 4     'proggaz
-Config Portd.0 = Input                                      ' = RX uC     'proggaz
-Config Portd.2 = Input                                      'proggaz
-'                                                                          'proggaz
-Config Portb = Output : Portb = 0                           'proggaz
-Out_2 Alias Portb.0                                         ' vyhod 1    'proggaz
-Out_1 Alias Portb.1                                         ' vyhod 2    'proggaz
-Out_4 Alias Portb.2                                         ' vyhod 3    'proggaz
 
-'Out_4 Alias Portd.3                                         ' vyhod 4   'progguard
-'Out_3 Alias Portd.4                                         ' vyhod 5   'progguard
-'Config Portd.0 = Input                                      ' = RX uC   'progguard
+Out_4 Alias Portd.3                                         ' vyhod 4   'progguard
+Out_3 Alias Portd.4                                         ' vyhod 5   'progguard
+Config Portd.0 = Input                                      ' = RX uC   'progguard
 '                                                                         'progguard
-'Config Portb = Output : Portb = 0                           'progguard
-'Out_2 Alias Portb.0                                         ' vyhod 1   'progguard
-'Out_1 Alias Portb.1                                         ' vyhod 2   'progguard
-'Out_5 Alias Portb.2                                         ' vyhod 3   'progguard
+Config Portb = Output : Portb = 0                           'progguard
+Out_2 Alias Portb.0                                         ' vyhod 1   'progguard
+Out_1 Alias Portb.1                                         ' vyhod 2   'progguard
+Out_5 Alias Portb.2                                         ' vyhod 3   'progguard
 
 Pwr_key_gsm Alias Portb.4                                   ' upravlenie pitaniem GSM-modema SIM900d
 
@@ -141,7 +130,6 @@ Gosub Test_power
 Gosub Init_modem                                            ' Zapusk GSM-modema
 Startbit = 0 : Kotli(1) = "0" : Kotli(2) = "0" : Kotli(3) = "0"
 Bin_vhodi = 0
-Out_5 = 0                                                   'proggaz
 Zaderjka_postanovki_guard = 0
 Vremya_dozvona = 50
 T_status(1) = 2
@@ -203,16 +191,6 @@ If Config_device.1 = 1 Then                                 '  Flag "G".      Av
 End If
 
 
-Do                                                          'proggaz
-   Nomer_vhoda = 254
-   Gosub Service_gas_input                                  'Servisgaz
-Loop Until Startbit = 1 Or Startbit = 2
-Nomer_vihoda = 0                                            'proggaz
-
-
-If Error_line = 3 Then                                      'proggaz
-   Otvet$ = "h "
-End If
 
 ' <<<<<<<<<<<   Chtoby pri vklyuchenii ustroystva prihodilo soobschenie  <<<<<<<<<<<<<<<<<<<<<<<
 If Config_device.7 = 1 Then                                 '        Flag "A".       Esli zadano nastroykami - soobschit' o vklyuchenii
@@ -307,17 +285,6 @@ Start_prg:
          Gosub Flushbuf                                     'ochistka bufera
       End If                                                '   If Pauza_do_sireny = 0
    End If                                                   ' If Pauza_do_sireny > 0 Then
-
-
-   If Begunok2 = 90 Then                                    'proggaz
-       If Startbit = 1 Then
-            Gosub Service_gas_input                         'cervisgaz ""
-       End If
-       Begunok2 = 0
-   End If
-      Incr Begunok2                                         'proggaz
-
-
 
    If Sirena_timer > 0 And Pauza_do_sireny = 0 Then         ' Pischit zadannoe vremya
      If Dozvon_po_trevoge = 0 And Alarm_in > 0 Then Dozvon_po_trevoge = 123
@@ -783,8 +750,8 @@ Tstr$ = Mid(sms$ , 1 , 2)
                      Rejim_vihoda_a(3) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(3) , 832
                      Tstr$ = Mid(sms$ , 7 , 1)
                      Rejim_vihoda_a(4) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(4) , 833
-                     'Tstr$ = Mid(sms$ , 8 , 1)
-                     'Rejim_vihoda_a(5) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(5) , 834   'progguard
+                     Tstr$ = Mid(sms$ , 8 , 1)
+                     Rejim_vihoda_a(5) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(5) , 834       'progguard
                      Otvet$ = "prinqto nr"
                      Tstr$ = ""
                      Nomer_vhoda = 9
@@ -1201,32 +1168,6 @@ Tstr$ = Mid(sms$ , 1 , 2)
               If Tstr$ = " " Or Tstr$ = "" Or Komanda$ = "r"then
                   Komanda$ = ""
                   Error_line_tm = 0                         ' sbros flaga oshibki linii TM
-            If Startbit = 1 Then                            'proggaz
-                Nomer_vhoda = 254
-                Kotli(1) = "X"
-                Kotli(2) = "X"
-                Kotli(3) = "X"
-                Number$ = ""
-                Startbit = 0
-                Parametri_komandy$ = ""
-                   Gosub Wait_2sec
-                   Print #1 , 969999
-                   Gosub Wait_2sec
-                   Print #1 , 979999
-                   Gosub Wait_2sec
-                    Print #1 , 989999
-                   Komanda$ = Otvet$
-                   While Startbit = 0
-                      Gosub Service_gas_input
-                   Wend
-                   Komanda$ = Komanda$ + " kot:" + Kotli(1) + Kotli(2) + Kotli(3)
-                   Komanda$ = Komanda$ + " vh:" + Bin(bin_vhodi)
-                   Komanda$ = Komanda$ + " vQh:" + Parametri_komandy$
-                   Otvet$ = Otvet$ + Komanda$
-                   Gosub Sendsms
-                   Otvet$ = ""
-                   Nomer_vhoda = 0
-               End If                                       'proggaz
 '               ' izmerim i otpravim temperaturu
                If Ohrana = 0 Then Otvet$ = Otvet$ + " snqt s ohranQ"
                If Ohrana = 1 Then Otvet$ = Otvet$ + " na ohrane"
@@ -1312,11 +1253,11 @@ Tstr$ = Mid(sms$ , 1 , 2)
                   Otvet$ = Otvet$ + "0"
                End If
 
-              ' If Out_5 = 1 Then                            'progguard
-'                  Otvet$ = Otvet$ + "1"
-'               Else
-'                  Otvet$ = Otvet$ + "0"
-'               End If
+              If Out_5 = 1 Then                             'progguard
+                  Otvet$ = Otvet$ + "1"
+               Else
+                  Otvet$ = Otvet$ + "0"
+               End If
 
 
               Adc_data = Getadc(7)
@@ -2657,7 +2598,7 @@ Vkl_vihoda:
             Case 2 : If Rejim_vihoda_a(2) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_2 = 1
             Case 3 : If Rejim_vihoda_a(3) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_3 = 1
             Case 4 : If Rejim_vihoda_a(4) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_4 = 1
-            'Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 1       'progguard
+            Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 1       'progguard
 '            Case 10 : Do                                    'proggaz
 '                        Print #1 , 999977                   'otkluchenie platy
 '                        Startbit = 1
@@ -2684,7 +2625,7 @@ Vikl_vihoda:
             Case 2 : If Rejim_vihoda_a(2) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_2 = 0
             Case 3 : If Rejim_vihoda_a(3) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_3 = 0
             Case 4 : If Rejim_vihoda_a(4) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_4 = 0
-           ' Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 0       'progguard
+            Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 0       'progguard
 '            Case 10 : Do                                    'proggaz
 '                        Print #1 , 999966                   'otkluchenie platy
 '                        Startbit = 0
@@ -2965,118 +2906,118 @@ Sms_upd:
  Rejim_vihoda = 56
 Return
 
-Service_gas_input:                                          'proggaz
-  If Nomer_vhoda = 254 Then Gosub Wait_2sec
-    A = 0
-   Inmessage$ = ""
-   Time_error = 0
-   Reset Watchdog
-   Otvet$ = ""
-   Print #1 , 999999
-      Do
-          Reset Watchdog
-         A = Inkey(#2)
-         Select Case A
-           Case 0 :
-           Case 35 : Exit Do
-           Case Else : If A > 47 And A < 58 Then Inmessage$ = Inmessage$ + Chr(a)
-         End Select
-         Time_error = Time_error + 1
-         If A <> 0 Then Time_error = 0
-         If Time_error = 7000 Then
-            Error_line = Error_line + 1
-            If Error_line = 3 And Startbit = 1 Then
-               Otvet$ = "otkaz dopolnitelBnogo modulq"
-               Gosub Sendsms
-            End If
-            If Error_line = 3 Then
-               Startbit = 2
-               Exit Do
-            End If
-            Time_error = 0
-             Reset Watchdog
-             Exit Do
-         End If                                             ' If Time_error = 7000
-      Loop
-      If Inmessage$ <> "" Then
-         Time_error = Val(inmessage$)
-         If Time_error <= 255 Then
-             If Startbit = 0 And Inmessage$ = "000" Then
-                 Startbit = 1
-             Else
-                  If Inmessage$ <> "000" Then
-                     Bin_vhodi = Val(inmessage$)
-                  End If
-         End If
-      Else                                                  'If Time_error <= 255 Then
-        Tstr$ = Mid(inmessage$ , 1 , 1)
-        Temp = Val(tstr$)
-        Tstr$ = Mid(inmessage$ , 2 , 1)
-        Temp2 = Val(tstr$)=
-        Tstr$ = Mid(inmessage$ , 3 , 1)
-        Temp3 = Val(tstr$)
-        If Temp = 3 Then
-         Kotli(temp2) = Str(temp3)
-           Select Case Temp3
-              Case 9 : Otvet$ = "ostanovka:"
-              Case 1 : Otvet$ = "zapusk:"
-              Case 2 : Otvet$ = "net plameni:"
-              Case 3 : Otvet$ = "peregrev teplonositelq 1:"
-              Case 4 : Otvet$ = "net tqgi:"
-              Case 5 : Otvet$ = "peregrev teplonositelq 2:"
-              Case 6 : Otvet$ = "nizkoe naprqjenie:"
-              Case 7 : Otvet$ = "net nagreva teplonositelq:"
-              Case 8 : Otvet$ = "net otveta:"
-           End Select
-            If Temp3 = 9 Then Kotli(temp2) = "0"
-            Otvet$ = Otvet$ + " kotel " + Str(temp2)
-        End If                                              'If Temp = 3 Then
+'Service_gas_input:                                          'proggaz
+'  If Nomer_vhoda = 254 Then Gosub Wait_2sec
+'    A = 0
+'   Inmessage$ = ""
+'   Time_error = 0
+'   Reset Watchdog
+'   Otvet$ = ""
+'   Print #1 , 999999
+'      Do
+'          Reset Watchdog
+'         A = Inkey(#2)
+'         Select Case A
+'           Case 0 :
+'           Case 35 : Exit Do
+'           Case Else : If A > 47 And A < 58 Then Inmessage$ = Inmessage$ + Chr(a)
+'         End Select
+'         Time_error = Time_error + 1
+'         If A <> 0 Then Time_error = 0
+'         If Time_error = 7000 Then
+'            Error_line = Error_line + 1
+'            If Error_line = 3 And Startbit = 1 Then
+'               Otvet$ = "otkaz dopolnitelBnogo modulq"
+'               Gosub Sendsms
+'            End If
+'            If Error_line = 3 Then
+'               Startbit = 2
+'               Exit Do
+'            End If
+'            Time_error = 0
+'             Reset Watchdog
+'             Exit Do
+'         End If                                             ' If Time_error = 7000
+'      Loop
+'      If Inmessage$ <> "" Then
+'         Time_error = Val(inmessage$)
+'         If Time_error <= 255 Then
+'             If Startbit = 0 And Inmessage$ = "000" Then
+'                 Startbit = 1
+'             Else
+'                  If Inmessage$ <> "000" Then
+'                     Bin_vhodi = Val(inmessage$)
+'                  End If
+'         End If
+'      Else                                                  'If Time_error <= 255 Then
+'        Tstr$ = Mid(inmessage$ , 1 , 1)
+'        Temp = Val(tstr$)
+'        Tstr$ = Mid(inmessage$ , 2 , 1)
+'        Temp2 = Val(tstr$)=
+'        Tstr$ = Mid(inmessage$ , 3 , 1)
+'        Temp3 = Val(tstr$)
+'        If Temp = 3 Then
+'         Kotli(temp2) = Str(temp3)
+'           Select Case Temp3
+'              Case 9 : Otvet$ = "ostanovka:"
+'              Case 1 : Otvet$ = "zapusk:"
+'              Case 2 : Otvet$ = "net plameni:"
+'              Case 3 : Otvet$ = "peregrev teplonositelq 1:"
+'              Case 4 : Otvet$ = "net tqgi:"
+'              Case 5 : Otvet$ = "peregrev teplonositelq 2:"
+'              Case 6 : Otvet$ = "nizkoe naprqjenie:"
+'              Case 7 : Otvet$ = "net nagreva teplonositelq:"
+'              Case 8 : Otvet$ = "net otveta:"
+'           End Select
+'            If Temp3 = 9 Then Kotli(temp2) = "0"
+'            Otvet$ = Otvet$ + " kotel " + Str(temp2)
+'        End If                                              'If Temp = 3 Then
 
-        If Temp = 4 Then
-           Parametri_komandy$ = Str(temp2)
-           Parametri_komandy$ = Parametri_komandy$ + Str(temp3)
-        End If
+'        If Temp = 4 Then
+'           Parametri_komandy$ = Str(temp2)
+'           Parametri_komandy$ = Parametri_komandy$ + Str(temp3)
+'        End If
 
-         If Temp = 8 Then
-            'Print #1 , 989999
-            Vhod_adc = Temp2 * 41
-               Vhod_adc = Vhod_adc + 375
+'         If Temp = 8 Then
+'            'Print #1 , 989999
+'            Vhod_adc = Temp2 * 41
+'               Vhod_adc = Vhod_adc + 375
 
-               Otvet$ = ""                                  ' chitaem soobschenie iz EEPROM mikrokontrollera
-               For Temp = 0 To 40
-                  Adc_data = Vhod_adc + Temp                ' Po adresu Vhod_adc + X
-                  Readeeprom T1 , Adc_data                  ' Peremennaya, adres
-                  If T1 = 255 Then Exit For                 ' Doshli do konca soobscheniya
-                  Otvet$ = Otvet$ + Chr(t1)
-               Next
+'               Otvet$ = ""                                  ' chitaem soobschenie iz EEPROM mikrokontrollera
+'               For Temp = 0 To 40
+'                  Adc_data = Vhod_adc + Temp                ' Po adresu Vhod_adc + X
+'                  Readeeprom T1 , Adc_data                  ' Peremennaya, adres
+'                  If T1 = 255 Then Exit For                 ' Doshli do konca soobscheniya
+'                  Otvet$ = Otvet$ + Chr(t1)
+'               Next
 
-               ' esli v pamyati net nastroek
-               Rejim_vihoda = 41                            'sms gas
+'               ' esli v pamyati net nastroek
+'               Rejim_vihoda = 41                            'sms gas
 
-              Select Case Temp3
-               Case 1 : Otvet$ = "srabotal " + Str(temp2) + ":" + Otvet$
-               Case 0 : Otvet$ = "vosstanovlenie " + Str(temp2) + ":" + Otvet$
-              End Select
-         End If                                             'If Temp = 8
-      If Temp = 9 Then
-        Otvet$ = "prinqto"
-      End If
-   End If                                                   'If Time_error <= 255 Then
+'              Select Case Temp3
+'               Case 1 : Otvet$ = "srabotal " + Str(temp2) + ":" + Otvet$
+'               Case 0 : Otvet$ = "vosstanovlenie " + Str(temp2) + ":" + Otvet$
+'              End Select
+'         End If                                             'If Temp = 8
+'      If Temp = 9 Then
+'        Otvet$ = "prinqto"
+'      End If
+'   End If                                                   'If Time_error <= 255 Then
 
 
-      If Startbit = 0 Then
-         Time_error = 0
-         Goto Service_gas_input
-      End If
-      If Otvet$ <> "" And Startbit = 1 And Nomer_vhoda <> 254 Then
-         Rejim_vihoda = 88
-         Gosub Sendsms
-      End If
-      Otvet$ = ""
-      Error_line = 0
-  Else
-    If Startbit = 0 Then
-        Goto Service_gas_input
-    End If
-  End If
-Return
+'      If Startbit = 0 Then
+'         Time_error = 0
+'         Goto Service_gas_input
+'      End If
+'      If Otvet$ <> "" And Startbit = 1 And Nomer_vhoda <> 254 Then
+'         Rejim_vihoda = 88
+'         Gosub Sendsms
+'      End If
+'      Otvet$ = ""
+'      Error_line = 0
+'  Else
+'    If Startbit = 0 Then
+'        Goto Service_gas_input
+'    End If
+'  End If
+'Return
