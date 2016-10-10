@@ -9,7 +9,6 @@ $baud = 19200                                               ' Vyshe 19200 pri kv
 
    Open "comd.4:19200,8,n,1" For Output As #1               'proggaz
    Open "comd.2:19200,8,n,1" For Input As #2                'proggaz
-  ' Open "comd.2:19200,8,n,1" For Output As #1               'progguard
                                      'ubrat'   stroku Out_3 Alias Portd.4
 Dim A As Byte , Inmessage$ As String * 4 , Time_error As Long
 Dim Out_5 As Bit                                            'proggaz
@@ -83,15 +82,6 @@ Config Portb = Output : Portb = 0                           'proggaz
 Out_2 Alias Portb.0                                         ' vyhod 1    'proggaz
 Out_1 Alias Portb.1                                         ' vyhod 2    'proggaz
 Out_4 Alias Portb.2                                         ' vyhod 3    'proggaz
-
-'Out_4 Alias Portd.3                                         ' vyhod 4   'progguard
-'Out_3 Alias Portd.4                                         ' vyhod 5   'progguard
-'Config Portd.0 = Input                                      ' = RX uC   'progguard
-'                                                                         'progguard
-'Config Portb = Output : Portb = 0                           'progguard
-'Out_2 Alias Portb.0                                         ' vyhod 1   'progguard
-'Out_1 Alias Portb.1                                         ' vyhod 2   'progguard
-'Out_5 Alias Portb.2                                         ' vyhod 3   'progguard
 
 Pwr_key_gsm Alias Portb.4                                   ' upravlenie pitaniem GSM-modema SIM900d
 
@@ -783,8 +773,6 @@ Tstr$ = Mid(sms$ , 1 , 2)
                      Rejim_vihoda_a(3) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(3) , 832
                      Tstr$ = Mid(sms$ , 7 , 1)
                      Rejim_vihoda_a(4) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(4) , 833
-                     'Tstr$ = Mid(sms$ , 8 , 1)
-                     'Rejim_vihoda_a(5) = Val(tstr$) : Writeeeprom Rejim_vihoda_a(5) , 834   'progguard
                      Otvet$ = "prinqto nr"
                      Tstr$ = ""
                      Nomer_vhoda = 9
@@ -1311,12 +1299,6 @@ Tstr$ = Mid(sms$ , 1 , 2)
                Else
                   Otvet$ = Otvet$ + "0"
                End If
-
-              ' If Out_5 = 1 Then                            'progguard
-'                  Otvet$ = Otvet$ + "1"
-'               Else
-'                  Otvet$ = Otvet$ + "0"
-'               End If
 
 
               Adc_data = Getadc(7)
@@ -2657,7 +2639,6 @@ Vkl_vihoda:
             Case 2 : If Rejim_vihoda_a(2) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_2 = 1
             Case 3 : If Rejim_vihoda_a(3) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_3 = 1
             Case 4 : If Rejim_vihoda_a(4) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_4 = 1
-            'Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 1       'progguard
 '            Case 10 : Do                                    'proggaz
 '                        Print #1 , 999977                   'otkluchenie platy
 '                        Startbit = 1
@@ -2684,7 +2665,6 @@ Vikl_vihoda:
             Case 2 : If Rejim_vihoda_a(2) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_2 = 0
             Case 3 : If Rejim_vihoda_a(3) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_3 = 0
             Case 4 : If Rejim_vihoda_a(4) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_4 = 0
-           ' Case 5 : If Rejim_vihoda_a(5) = Rejim_vihoda Or Rejim_vihoda = 255 Then Out_5 = 0       'progguard
 '            Case 10 : Do                                    'proggaz
 '                        Print #1 , 999966                   'otkluchenie platy
 '                        Startbit = 0
